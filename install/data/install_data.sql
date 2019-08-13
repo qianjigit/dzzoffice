@@ -6,14 +6,15 @@ INSERT INTO `dzz_app_market` (`appid`,`mid`, `appname`, `appico`, `appdesc`, `ap
 (2, 2, '机构用户', 'appico/201712/21/131016is1wjww2uwvljllw.png', 'Dzz机构用户管理', '{adminscript}?mod=orguser', '', '', 1377753015, 2, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'orguser', 'admin', 1, '2.0', '', 20171211, ''),
 (3, 3, '系统设置', 'appico/201712/21/160754fwfmziiiift3gwsw.png', '系统基础设置', '{adminscript}?mod=setting', '', '', 1377677273, 3, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'setting', 'admin', 1, '2.0', '', 20171115, ''),
 (4, 4, '应用市场', 'appico/201712/21/152718k9g2pc6wouwkklwl.png', '应用管理，应用市场，支持应用在线安装，在线升级等', '{adminscript}?mod=appmarket', '', '', 1377674837, 4, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'appmarket', 'admin', 1, '2.0', '', 20171115, ''),
---(5, 5, '云设置和管理', 'appico/201712/21/171106u1dk40digrrr79ed.png', '设置和管理第三方云盘、云存储等', '{adminscript}?mod=cloud', '', '', 0, 5, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'cloud', 'admin', 1, '2.0', '', 20171115, ''),
+(5, 5, '云设置和管理', 'appico/201712/21/171106u1dk40digrrr79ed.png', '设置和管理第三方云盘、云存储等', '{adminscript}?mod=cloud', '', '', 0, 5, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'cloud', 'admin', 1, '2.0', '', 20171115, ''),
 (6, 6, '文件管理', 'appico/201712/21/175535t47bad99b7sssdwq.png', '管理和查看系统所有文件', '{adminscript}?mod=filemanage', '', '', 0, 6, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'filemanage', 'admin', 1, '2.0', '', 20180206, ''),
 (7, 7, '分享管理', 'appico/201712/21/165535t47bad99b7qqqdwq.png', '管理和查阅所有分享', '{adminscript}?mod=share', '', '', 0, 7, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'share', 'admin', 1, '2.0', '', 20180206, ''),
 (8, 8, '系统日志', 'appico/201712/21/113527zz2665xg7d3h2777.png', 'Dzz 日志记录', '{adminscript}?mod=systemlog', '{adminscript}?mod=systemlog&op=admin', '', 0, 8, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'systemlog', 'admin', 1, '2.0', '', 20171115, 'a:2:{s:11:\"installfile\";s:11:\"install.php\";s:13:\"uninstallfile\";s:13:\"uninstall.php\";}'),
 (9, 9, '系统工具', 'appico/201712/21/160537cikgw2v6s6z4scuv.png', '系统维护相关工具集合，如：更新缓存、数据库备份，计划任务，在线升级等', '{adminscript}?mod=system', '', '', 1377677136, 9, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'system', 'admin', 1, '2.0', '', 20171115, ''),
 (10, 10, '应用库', 'appico/201712/21/123754pb0s666i6sjws1jc.png', '通过应用库用户选择安装自己需要的应用', '{dzzscript}?mod=market', '', '{dzzscript}?mod=market&op=notice', 1378615073, 10, '乐云网络', 0, 1, 1, 0, '', '', 1, 0, 1, 0, 1, 0, 0, 'market', 'dzz', 0, '2.0', '', 20171115, ''),
-(11, 11, '投票', 'appico/201712/21/150002d834yjjqnq82qj8z.png', 'Dzz 内置投票组件，结合其他应用使用，如新闻中用到投票插件，其他开发者也可以为自己的应用调用这个通用评论插件', '{dzzscript}?mod=dzzvote', '', '', 1378615073, 11, '乐云网络', 0, 0, 1, 0, '', '', 3, 0, 1, 0, 1, 0, 0, 'dzzvote', 'dzz', 1, '2.0', '', 20171115, ''), 
-(12, 12, '评论', 'appico/201712/21/128754pb0s666i6sjws1jc.png', 'Dzz 系统评论组件，结合在其他应用使用，如新闻。其他开发者也可以为自己的应用调用这个通用评论插件', '{dzzscript}?mod=comment', '', '', 1378615073, 12, '乐云网络', 0, 0, 1, 0, '', '', 3, 0, 1, 0, 1, 0, 0, 'comment', 'dzz', 1, '2.0', '', 20171115, '');
+(11, 11, '投票', 'appico/201712/21/150002d834yjjqnq82qj8z.png', 'Dzz 内置投票组件，结合其他应用使用，如新闻中用到投票插件，其他开发者也可以为自己的应用调用这个通用评论插件', '{dzzscript}?mod=dzzvote', '', '', 1378615073, 11, '乐云网络', 0, 0, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'dzzvote', 'dzz', 1, '2.0', '', 20171115, ''), 
+(12, 12, '评论', 'appico/201712/21/128754pb0s666i6sjws1jc.png', 'Dzz 系统评论组件，结合在其他应用使用，如新闻。其他开发者也可以为自己的应用调用这个通用评论插件', '{dzzscript}?mod=comment', '', '', 1378615073, 12, '乐云网络', 0, 0, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'comment', 'dzz', 1, '2.0', '', 20171115, ''),
+(13, 37, '用户资料管理', 'appico/201712/21/103805dczcm89b0gi8i9gc.png', '管理用户资料、资料审核、认证等', '{adminscript}?mod=member', '', '', 1378615073, 13, '乐云网络', 0, 1, 1, 0, '', '', 3, 0, 0, 2, 1, 0, 0, 'member', 'admin', 1, '2.0', '', 20171115, '');
 --
 -- 转存表中的数据 `dzz_app_tag`
 --
@@ -68,8 +69,9 @@ INSERT INTO `dzz_icon` VALUES(6, 'localhost', 'mod=discuss', 'discuss', 'icon/20
 INSERT INTO `dzz_cron` VALUES(1, 1, 'system', '每月通知清理', 'cron_clean_notification_month.php', 1393646860, 0, -1, 1, 5, '0');
 INSERT INTO `dzz_cron` VALUES(3, 1, 'system', '每周清理缓存文件', 'cron_cache_cleanup_week.php', 1395635931, 0, 1, -1, 5, '0');
 INSERT INTO `dzz_cron` VALUES(4, 0, 'system', '每周清理缓存缩略图', 'cron_imgcache_cleanup_week.php', 1395635931,0, 1, -1, 5, '0');
-INSERT INTO `dzz_cron` VALUES(5, 0, 'system', '每月清除未用附件', 'cron_clean_copys0_attachment_by_month.php', 1395388548,0, -1, 1, 4, '30');
+INSERT INTO `dzz_cron` VALUES(5, 0, 'system', '每月清除未用附件', 'cron_clean_copys0_attachment_by_month.php', 1395388548,0, -1, -1, -1, '5	10	15	20	25	30	35	40	45	50	55');
 INSERT INTO `dzz_cron` VALUES(6, 0, 'system', '定时备份数据库', 'cron_database_backup.php', 1460797274, 1460840400, 0, -1, 5, '0');
+INSERT INTO `dzz_cron` VALUES(7, 0, 'system', '定时迁移本地文件到存储位置', 'cron_movetospace_attachment.php', 1536458668, 1536459000, -1, -1, -1, '0	10	20	30	40	50');
 
 --
 -- 转存表中的数据 `dzz_folder_default`
@@ -94,7 +96,6 @@ INSERT INTO `dzz_hooks` (`id`, `app_market_id`, `name`, `description`, `type`, `
 (8, 0, 'app_run', '', 1, 0, 'core\\dzz\\apprun', 1, 0),
 (9, 0, 'mod_run', '', 1, 0, 'core\\dzz\\modrun', 1,0),
 (10, 0, 'adminlogin', '', 1, 0, 'admin\\login\\classes\\adminlogin', 1, 0),
-(11, 0, 'login_mod', '', 1, 0, 'user\\qq\\classes\\qqlogin', 1, 0),
 (12, 0, 'mod_start', '', 1, 0, 'core\\dzz\\modroute', 1, 0),
 (13, 0, 'login_check', '', 1, 0, 'user\\login\\classes\\logincheck|user', 1, 0),
 (14, 0, 'login_valchk', '', 1, 0, 'user\\login\\classes\\loginvalchk|user/login', 1, 0),
@@ -165,7 +166,7 @@ INSERT INTO `dzz_setting` VALUES('regname', 'register');
 INSERT INTO `dzz_setting` VALUES('bbrules', '0');
 INSERT INTO `dzz_setting` VALUES('bbrulesforce', '0');
 INSERT INTO `dzz_setting` VALUES('bbrulestxt', '');
-INSERT INTO `dzz_setting` VALUES('seccodedata', 'a:13:{s:4:"type";s:1:"0";s:5:"width";s:3:"150";s:6:"height";s:2:"40";s:7:"scatter";s:1:"0";s:10:"background";s:1:"1";s:10:"adulterate";s:1:"1";s:3:"ttf";s:1:"1";s:5:"angle";s:1:"0";s:7:"warping";s:1:"0";s:5:"color";s:1:"1";s:4:"size";s:1:"0";s:6:"shadow";s:1:"1";s:8:"animator";s:1:"1";}');
+INSERT INTO `dzz_setting` VALUES('seccodedata', 'a:13:{s:4:"type";s:1:"0";s:5:"width";s:3:"150";s:6:"height";s:2:"34";s:7:"scatter";s:1:"0";s:10:"background";s:1:"1";s:10:"adulterate";s:1:"1";s:3:"ttf";s:1:"1";s:5:"angle";s:1:"0";s:7:"warping";s:1:"0";s:5:"color";s:1:"1";s:4:"size";s:1:"0";s:6:"shadow";s:1:"1";s:8:"animator";s:1:"1";}');
 INSERT INTO `dzz_setting` VALUES('bbname', 'dzzoffice');
 INSERT INTO `dzz_setting` VALUES('pwlength', '0');
 INSERT INTO `dzz_setting` VALUES('strongpw', 'a:0:{}');
@@ -201,9 +202,12 @@ INSERT INTO `dzz_setting` VALUES('at_range', 'a:3:{i:9;s:1:"1";i:2;s:1:"2";i:1;s
 INSERT INTO `dzz_setting` VALUES('loginset', 'a:5:{s:5:"title";s:9:"DzzOffice";s:8:"subtitle";s:18:"协同办公平台";s:10:"background";s:0:"";s:8:"template";s:1:"1";s:6:"bcolor";s:17:"rgb(58, 110, 165)";}');
 INSERT INTO `dzz_setting` VALUES('privacy', 'a:1:{s:7:"profile";a:17:{s:9:"education";i:1;s:8:"realname";i:-1;s:7:"address";i:0;s:9:"telephone";i:0;s:15:"affectivestatus";i:0;s:10:"department";i:0;s:8:"birthday";i:0;s:13:"constellation";i:0;s:9:"bloodtype";i:0;s:6:"gender";i:0;s:6:"mobile";i:0;s:2:"qq";i:0;s:7:"zipcode";i:0;s:11:"nationality";i:0;s:14:"graduateschool";i:0;s:8:"interest";i:0;s:3:"bio";i:0;}}');
 INSERT INTO `dzz_setting` VALUES('thumbsize', 'a:3:{s:5:"small";a:2:{s:5:"width";i:256;s:6:"height";i:256;}s:6:"middle";a:2:{s:5:"width";i:800;s:6:"height";i:600;}s:5:"large";a:2:{s:5:"width";i:1440;s:6:"height";i:900;}}');
-INSERT INTO `dzz_setting` VALUES('verify', 'a:8:{i:1;a:9:{s:4:"desc";s:0:"";s:9:"available";s:1:"1";s:8:"showicon";s:1:"1";s:5:"field";a:1:{s:8:"realname";s:8:"realname";}s:8:"readonly";i:1;s:5:"title";s:12:"实名认证";s:4:"icon";s:31:"common/verify/1/verify_icon.jpg";s:12:"unverifyicon";s:0:"";s:7:"groupid";a:0:{}}i:2;a:8:{s:5:"title";s:0:"";s:4:"desc";s:0:"";s:9:"available";s:1:"0";s:8:"showicon";s:1:"0";s:8:"readonly";N;s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:7:"groupid";a:0:{}}i:3;a:8:{s:5:"title";s:0:"";s:4:"desc";s:0:"";s:9:"available";s:1:"0";s:8:"showicon";s:1:"0";s:8:"readonly";N;s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:7:"groupid";a:0:{}}i:4;a:4:{s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:9:"available";i:0;s:5:"title";s:0:"";}i:5;a:4:{s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:9:"available";i:0;s:5:"title";s:0:"";}i:6;a:4:{s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:9:"available";i:0;s:5:"title";s:0:"";}i:7;a:4:{s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:9:"available";i:0;s:5:"title";s:0:"";}s:7:"enabled";b:1;}');
+INSERT INTO `dzz_setting` VALUES('verify', 'a:8:{i:1;a:9:{s:4:"desc";s:0:"";s:9:"available";s:1:"1";s:8:"showicon";s:1:"0";s:5:"field";a:1:{s:8:"realname";s:8:"realname";}s:8:"readonly";i:1;s:5:"title";s:12:"实名认证";s:4:"icon";s:31:"common/verify/1/verify_icon.jpg";s:12:"unverifyicon";s:0:"";s:7:"groupid";a:0:{}}i:2;a:8:{s:5:"title";s:0:"";s:4:"desc";s:0:"";s:9:"available";s:1:"0";s:8:"showicon";s:1:"0";s:8:"readonly";N;s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:7:"groupid";a:0:{}}i:3;a:8:{s:5:"title";s:0:"";s:4:"desc";s:0:"";s:9:"available";s:1:"0";s:8:"showicon";s:1:"0";s:8:"readonly";N;s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:7:"groupid";a:0:{}}i:4;a:4:{s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:9:"available";i:0;s:5:"title";s:0:"";}i:5;a:4:{s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:9:"available";i:0;s:5:"title";s:0:"";}i:6;a:4:{s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:9:"available";i:0;s:5:"title";s:0:"";}i:7;a:4:{s:4:"icon";s:0:"";s:12:"unverifyicon";s:0:"";s:9:"available";i:0;s:5:"title";s:0:"";}s:7:"enabled";b:1;}');
 INSERT INTO `dzz_setting` VALUES('systemlog_open', '1');
 INSERT INTO `dzz_setting` VALUES('systemlog_setting','a:7:{s:8:"errorlog";a:3:{s:5:"title";s:12:"系统错误";s:7:"is_open";i:1;s:8:"issystem";i:1;}s:5:"cplog";a:3:{s:5:"title";s:12:"后台访问";s:7:"is_open";i:1;s:8:"issystem";i:1;}s:9:"deletelog";a:3:{s:5:"title";s:12:"数据删除";s:7:"is_open";i:1;s:8:"issystem";i:1;}s:9:"updatelog";a:3:{s:5:"title";s:12:"数据更新";s:7:"is_open";i:1;s:8:"issystem";i:1;}s:8:"loginlog";a:3:{s:5:"title";s:12:"用户登录";s:7:"is_open";i:1;s:8:"issystem";i:1;}s:8:"sendmail";a:3:{s:5:"title";s:12:"邮件发送";s:7:"is_open";i:1;s:8:"issystem";i:1;}s:8:"otherlog";a:3:{s:5:"title";s:12:"其他信息";s:7:"is_open";i:1;s:8:"issystem";i:1;}}');
+
+INSERT INTO `dzz_setting` VALUES('fileVersion', '1');
+INSERT INTO `dzz_setting` VALUES('fileVersionNumber', '50');
 --
 -- 转存表中的数据 `dzz_imagetype`
 --

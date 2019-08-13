@@ -20,12 +20,12 @@
 					<!--{if $attach[isimage]}-->
 					<div class="pic_fed clearfix">
 						<div class="img_pfed">
-							<a class="min_ipfed" hidefocus="true" href="$attach[url]" rel="$attach[url]" target="_blank"><img src="$attach[img]" alt="$attach[title]" class="artZoom" style="cursor: url(dzz/feed/images/zoomin.cur), pointer;"></a>
+							<a class="min_ipfed" hidefocus="true" href="javascript:;"><img src="$attach[img]" data-original="$attach[img]&original=1" alt="$attach[title]" class=""></a>
 						</div>
 					</div>
 					<div class="file_fed imgfile_fed clearfix"> $attach[title]<span class="kb_nffed">($attach[filesize])</span>
 						<p class="down_ffed">
-							<a href="javascript:;" title="" hidefocus="true" class="btn_dffed skip_mmfed" onclick="feed_downAttach('$attach[qid]')">{lang {lang download}}
+							<a href="javascript:;" title="" hidefocus="true" class="btn_dffed skip_mmfed" onclick="feed_downAttach('$attach[qid]')">{lang download}
 								<!--{if $attach[downloads]>0}-->($attach[downloads]{lang degree})
 								<!--{/if}-->
 							</a>
@@ -83,9 +83,9 @@
 				<div class="btn_acfed">
 					<ul>
 						<!--{if $_G['uid']==$value1[authorid] || $_G[adminid]==1}-->
-						<li class="more_bacfed">
+						<!--<li class="more_bacfed">
 							<a hidefocus="true" href="javascript:void(0);" onclick="feed_edit('$value1[cid]','$_GET[allowattach]','$_GET[allowat]','$_GET[allowsmiley]')">{lang edit}</a>
-						</li>
+						</li>-->
 						<li class="more_bacfed">
 							<a hidefocus="true" href="javascript:void(0);" onclick="feed_delete('$value1[cid]','comment_$value1[cid]','$value1[pcid]')">{lang delete}</a>
 						</li>

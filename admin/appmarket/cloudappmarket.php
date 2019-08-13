@@ -10,6 +10,7 @@
 if (!defined('IN_DZZ') || !defined('IN_ADMIN')) {
 	exit('Access Denied');
 }
+//define('DZZ_OUTPUTED', 1);
 $navtitle=lang('appname');
 include libfile('function/organization');
 $op='cloudappmarket';
@@ -65,4 +66,6 @@ function curlcloudappmarket( $url="",$post_data="",  $token="" ){
 	}
 	return($response); 
 }
+
+
 ?>

@@ -18,7 +18,7 @@ $_config = array();
  * $_config['db']['2']['dbhost'] = 'localhost';
  * ...
  */
-$_config['db'][1]['dbhost']  		= 'localhost';//支持直接加端口如：127.0.0.1:3306或使用UNix socket 如：/tmp/mysql.sock
+$_config['db'][1]['dbhost']  		= 'localhost';//支持三种直接加端口如：127.0.0.1:3306或使用UNix socket 如：/tmp/mysql.sock
 $_config['db'][1]['dbuser']  		= 'root';
 $_config['db'][1]['dbpw'] 	 		= 'root';
 $_config['db'][1]['dbcharset'] 		= 'utf8';
@@ -74,19 +74,7 @@ $_config['db']['common'] = array();
  */
 $_config['db']['common']['slave_except_table'] = '';
 
-/**
- *命名空间
- */
-// 命名空间相关设置
-/**
- * 配置相应命名空间路径
- * $_config['namespacelist'] = array(
- *  'root'      =>DZZ_ROOT,
- *  'coreroot'  => DZZ_ROOT.'core')
- *
- */
-$_config['output']['language'] 			= 'zh-cn';	// 页面语言 zh-cn/en-us
-$_config['output']['language_list']['zh-cn']='简体中文';	// 页面语言 zh-cn/en-us
+
 
 /**
  * 内存服务器优化设置
@@ -111,7 +99,7 @@ $_config['memory']['redis']['timeout'] = 0;
  */
 $_config['memory']['redis']['serializer'] = 1;
 
-$_config['memory']['memcache']['server'] = '127.0.0.1';			// memcache 服务器地址
+$_config['memory']['memcache']['server'] = '127.0.0.1'; // memcache 服务器地址
 $_config['memory']['memcache']['port'] = 11211;			// memcache 服务器端口
 $_config['memory']['memcache']['pconnect'] = 1;			// memcache 是否长久连接
 $_config['memory']['memcache']['timeout'] = 1;			// memcache 服务器连接超时
@@ -122,32 +110,6 @@ $_config['memory']['eaccelerator'] = 0;					// 启动对 eaccelerator 的支持
 $_config['memory']['wincache'] = 1;						// 启动对 wincache 的支持
 
 
-
-// 命名空间相关设置
-/**
- * 配置相应命名空间路径
- * $_config['namespacelist'] = array(
- *  'root'      =>DZZ_ROOT,
- *  'coreroot'  => DZZ_ROOT.'core')
- *
-*/
-$_config['output']['language'] 			= 'zh-cn';	// 页面语言 zh-cn/en-us
-$_config['output']['language_list']['zh-cn']='简体中文';	// 页面语言 zh-cn/en-us
-$_config['namespacelist'] = array(
-    'root'      =>DZZ_ROOT,
-    'coreroot'  => DZZ_ROOT.'core',
-    'admin'     => DZZ_ROOT.'admin',
-    'core'      => CORE_PATH,
-    'dzz'       => DZZ_ROOT.APP_DIRNAME,
-    'user'      => DZZ_ROOT.'user',
-    'misc'      => DZZ_ROOT.'misc'
-);
-
-$_config['default_mod'] = 'index';
-
-$_config['default_op'] = 'index';
-
-$_config['dafault_action'] = 'index';
 // 服务器相关设置
 $_config['server']['id']		= 1;			// 服务器编号，多webserver的时候，用于标识当前服务器的ID
 
@@ -160,7 +122,11 @@ $_config['output']['charset'] 			= 'utf-8';	// 页面字符集
 $_config['output']['forceheader']		= 1;		// 强制输出页面字符集，用于避免某些环境乱码
 $_config['output']['gzip'] 			    = 0;		// 是否采用 Gzip 压缩输出
 $_config['output']['tplrefresh'] 		= 1;		// 模板自动刷新开关 0=关闭, 1=打开
-$_config['output']['language'] 			= 'zh_cn';	// 页面语言 zh_cn/zh_tw
+
+
+$_config['output']['language'] 			= 'zh-cn';	// 页面语言 zh-cn/zh-tw
+$_config['output']['language_list']['zh-cn']='简体中文';	// 页面语言 zh-cn/en-us
+
 $_config['output']['staticurl'] 		= 'static/';	// 站点静态文件路径，“/”结尾
 $_config['output']['ajaxvalidate']		= 0;		// 是否严格验证 Ajax 页面的真实性 0=关闭，1=打开
 $_config['output']['iecompatible']		= 0;		// 页面 IE 兼容模式
@@ -184,10 +150,10 @@ $_config['security']['querysafe']['afullnote']	= 0;
 
 $_config['admincp']['founder']			= '1';		// 站点创始人：拥有站点管理后台的最高权限，每个站点可以设置 1名或多名创始人
 													// 可以使用uid，也可以使用用户名；多个创始人之间请使用逗号“,”分开;
-$_config['admincp']['checkip']			= 1;		// 后台管理操作是否验证管理员的 IP, 1=是[安全], 0=否。仅在管理员无法登陆后台时设置 0。
-$_config['admincp']['runquery']			= 1;		// 是否允许后台运行 SQL 语句 1=是 0=否[安全]
+$_config['admincp']['checkip']			= 1;		// 后台管理操作是否验证管理员的 IP, 1=是[安全], 0=否。仅在管理员无法登录后台时设置 0。
+$_config['admincp']['runquery']			= 0;		// 是否允许后台运行 SQL 语句 1=是 0=否[安全]
 $_config['admincp']['dbimport']			= 0;		// 是否允许后台恢复网站数据  1=是 0=否[安全]
-$_config['userlogin']['checkip']		= 1; 		//用户登录错误验证ip，对于同一ip同时使用时建议设置为0,否则当有一位用户登录错误次数超过5次，该ip被锁定15分钟，导致其他的同IP用户无法登陆;
+$_config['userlogin']['checkip']		= 1; 		//用户登录错误验证ip，对于同一ip同时使用时建议设置为0,否则当有一位用户登录错误次数超过5次，该ip被锁定15分钟，导致其他的同IP用户无法登录;
 
 //$_config['system_os']	= 'linux';		//windows,linux,mac,系统会自动判断
 //$_config['system_charset']='utf-8';	//操作系统编码，不设置系统将根据操作系统类型来判断linux:utf-8;windows:gbk;

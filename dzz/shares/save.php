@@ -11,7 +11,10 @@ if (!defined('IN_DZZ')) {
 global $_G;
 Hook::listen('check_login');//检查是否登录，未登录跳转到登录界面
 $uid = $_G['uid'];
-$dzzrids = isset($_GET['dzzrids']) ? trim($_GET['dzzrids']) : '';
+$dzzrids = isset($_GET['dzzrids']) ? trim($_GET['dzzrids']) :'';
+if(!$dzzrids){
+    $dzzrids = $_GET['token']['paths'];
+}
 $icoids = explode(',', $dzzrids);
 $data = array();
 $ridarr = array();
@@ -39,12 +42,18 @@ if(!$doing){
     $data['error'][$fid] = lang('no_privilege');
     $data['msg'][$fid] = 'error';
     $data['name'][$fid] = '';
-    exit(json_encode($data));
+    if(isset($_GET['token'])){
+        exit(json_encode(array('error'=>lang('no_privilege'))));
+    }else{
+        exit(json_encode($data));
+    }
+
 }
 
 $totalsize = 0;
 $icos = $folderids = array();
 $i = 0;
+$errorarr = array();
 foreach ($icoids as $icoid) {
     $rid = dzzdecode($icoid);
     if (empty($rid)) {
@@ -67,6 +76,16 @@ foreach ($icoids as $icoid) {
         $data['name'][$return['newdata']['rid']] = $return['newdata']['name'];
         $data['error'][$return['newdata']['rid']] = $return['newdata']['name'] . ':' . $return['error'];
         $data['msg'][$return['newdata']['rid']] = 'error';
+        $errorarr[] = $return['error'];
     }
 }
-exit(json_encode($data));
+if(isset($_GET['token'])){
+    if(count($errorarr)){
+        exit(json_encode(array('error'=>$errorarr[0])));
+    }else{
+        exit(json_encode(array('success'=>true)));
+    }
+}else{
+    exit(json_encode($data));
+}
+

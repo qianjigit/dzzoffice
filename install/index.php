@@ -168,7 +168,7 @@ if($method == 'show_license') {
 					$dbhost1=$dbhost;
 				}
 				if(empty($port)) $port='3306';
-				$link =  new mysqli($dbhost1, $dbuser, $dbpw, $dbname, $port, $unix_socket);
+				$link =  new mysqli($dbhost1, $dbuser, $dbpw, '', $port, $unix_socket);
 				$errno =  $link->connect_errno;
 				$error =  $link->connect_error;
 			}else{
@@ -415,6 +415,7 @@ if($method == 'show_license') {
 } elseif($method == 'ext_info') {
 	@touch($lockfile);
 	@unlink(ROOT_PATH.'./install/index.php');
+	@unlink(ROOT_PATH.'./install/update.php');
 	show_header();
 	echo '<iframe src="../misc.php?mod=syscache" style="display:none;"></iframe>';
 	echo '<h3>'.lang('install_successfully').'</h3>';

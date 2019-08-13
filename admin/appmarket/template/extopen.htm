@@ -50,7 +50,7 @@
 				<thead>
 					<tr>
 						<th width="100">{lang default}</th> 
-						<th><a href="{MOD_URL}&op=extopen&s=appid">{lang application_name}</a></th>
+						<th>{lang application_name}</th>
 					</tr>
 				</thead>
 
@@ -126,7 +126,8 @@
 		if( jQuery(obj).hasClass("isdefault1") ){
 			return false;
 		}
-		jQuery.post({
+		jQuery.ajax({
+			type:'post',
 			url:'{MOD_URL}&op=extopen',
 			data:{'extid':extid ,'do':'setdefault'},
 			success:function(json){

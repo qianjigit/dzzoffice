@@ -10,6 +10,12 @@
 if(!defined('IN_DZZ')) {
 	exit('Access Denied');
 }
+if(!function_exists('mysql_escape_string')){
+	function mysql_escape_string($str){
+		if(function_exists('mysqli_escape_string')) return mysqli_escape_string($str);
+		else return addslashes($str);
+	}
+}
 global $db;
 $db = & DB::object();
 $tabletype = $db->version() > '4.1' ? 'Engine' : 'Type';
@@ -135,7 +141,7 @@ function sqldumptablestruct($table) {
 		$tablename = substr($table, strpos($table, '.') + 1);
 		$create[1] = str_replace("CREATE TABLE $tablename", 'CREATE TABLE '.$table, $create[1]);
 	}
-	$tabledump .= $create[1];
+	$tabledump .= $create[1].";\n";
 	$tablestatus = DB::fetch_first("SHOW TABLE STATUS LIKE '$table'");
 	$tabledump .= ($tablestatus['Auto_increment'] ? " AUTO_INCREMENT=$tablestatus[Auto_increment]" : '').";\n\n";
 	return $tabledump;
@@ -180,7 +186,8 @@ function sqldumptable($table, $startfrom = 0, $currsize = 0) {
 				while($row = $db->fetch_row($rows)) {
 					$comma = $t = '';
 					for($i = 0; $i < $numfields; $i++) {
-						$t .= $comma.($_GET['usehex'] && !empty($row[$i]) && (strexists($tablefields[$i]['Type'], 'char') || strexists($tablefields[$i]['Type'], 'text')) ? '0x'.bin2hex($row[$i]) : '\''.addslashes($row[$i]).'\'');
+						
+						$t .= $comma.($_GET['usehex'] && !empty($row[$i]) && (strexists($tablefields[$i]['Type'], 'char') || strexists($tablefields[$i]['Type'], 'text')) ? '0x'.bin2hex($row[$i]) : '\''.mysql_escape_string($row[$i]).'\'');
 						$comma = ',';
 					}
 					
@@ -204,4 +211,5 @@ function sqldumptable($table, $startfrom = 0, $currsize = 0) {
 	}
 	return $tabledump;
 }
+
 ?>

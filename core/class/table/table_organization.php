@@ -20,8 +20,8 @@ class table_organization extends dzz_table
 
         $this->_table = 'organization';
         $this->_pk = 'orgid';
-        //$this->_pre_cache_key = 'organization_';
-        //$this->_cache_ttl = 0;
+        $this->_pre_cache_key = 'organization_';
+       // $this->_cache_ttl = 60*60;
 
         parent::__construct();
     }
@@ -68,37 +68,44 @@ class table_organization extends dzz_table
 	}
 	
     //查询机构群组信息
-    public function fetch_all_orggroup($uid)
+    public function fetch_all_orggroup($uid,$getmember = true)
     {
         $groups = array();
         if ($uid) {
             $orgids = C::t('organization_user')->fetch_org_by_uid($uid);
             $orgids = array_unique($orgids);
             $toporgids = array();
-            foreach ($orgids as $v) {
-                $orginfo = DB::fetch_first("select * from %t where `orgid` = %d", array($this->_table, $v));
-                if ($orginfo['type'] == 0) {
-                    $patharr = explode('-', $orginfo['pathkey']);
-                    $toporgid = intval(str_replace('_', '', $patharr[0]));
-                    if (in_array($toporgid, $toporgids)) {
-                        continue;
-                    }
-                    if (C::t('organization_admin')->chk_memberperm($toporgid, $uid) > 0) {
-                        $orginfo = DB::fetch_first("select * from %t where `orgid` = %d and syatemon = %d ORDER BY disp", array($this->_table, $toporgid, 1));
-                        $orginfo['usernum'] = C::t('organization_user')->fetch_num_by_toporgid($toporgid);
-                        $orginfo['adminer'] = C::t('organization_admin')->fetch_adminer_by_orgid($toporgid);
-                        $groups['org'][] = $orginfo;
-                    } else {
-                        if ($orginfo = DB::fetch_first("select * from %t where `orgid` = %d and syatemon = %d and manageon = %d ORDER BY disp", array($this->_table, $toporgid, 1, 1))) {
-                            $orginfo['usernum'] = C::t('organization_user')->fetch_num_by_toporgid($toporgid);
-                            $orginfo['adminer'] = C::t('organization_admin')->fetch_adminer_by_orgid($toporgid);
-                            $groups['org'][] = $orginfo;
+            foreach (parent::fetch_all($orgids) as $v) {
+                    if ($v['type'] == 0) {
+                        $patharr = explode('-', $v['pathkey']);
+                        $toporgid = intval(str_replace('_', '', $patharr[0]));
+                        if (in_array($toporgid, $toporgids)) {
+                            continue;
                         }
+						$orginfo=parent::fetch($toporgid);
+                        if (C::t('organization_admin')->chk_memberperm($toporgid, $uid) > 0) {
+                            if($orginfo['syatemon'] == 1){
+                                if($getmember){
+                                    $orginfo['usernum'] = C::t('organization_user')->fetch_num_by_toporgid($toporgid);
+                                    $orginfo['adminer'] = C::t('organization_admin')->fetch_adminer_by_orgid($toporgid);
+                                }
+                                $groups['org'][] = $orginfo;
+                            }
+                            //$orginfo = DB::fetch_first("select * from %t where `orgid` = %d and syatemon = %d ORDER BY disp", array($this->_table, $toporgid, 1));
 
+                        } else {
+                            if ($orginfo['syatemon'] == 1  && $orginfo['manageon'] == 1  && $orginfo['diron'] == 1) {
+                                if($getmember){
+                                    $orginfo['usernum'] = C::t('organization_user')->fetch_num_by_toporgid($toporgid);
+                                    $orginfo['adminer'] = C::t('organization_admin')->fetch_adminer_by_orgid($toporgid);
+                                }
+                                $groups['org'][] = $orginfo;
+                            }
+                        }
+                        $toporgids[] = $toporgid;
                     }
-                    $toporgids[] = $toporgid;
                 }
-            }
+
         }
         return $groups;
     }
@@ -114,71 +121,40 @@ class table_organization extends dzz_table
                 if ($foreces) {
                     if ($orginfo['syatemon'] == 0) {//系统管理员关闭群组
                         continue;
-                    } elseif ($orginfo['syatemon'] == 1 && $orginfo['manageon'] == 0 && C::t('organization_admin')->chk_memberperm($orginfo['orgid'], $uid) == 0) {//管理员关闭群组，当前用户不具备管理员权限
+                        //如果是普通成员，判断群组是否关闭，暂时用diron来进行判断
+                    } elseif ($orginfo['diron'] == 0 && C::t('organization_admin')->chk_memberperm($orginfo['orgid'], $uid) == 0) {//管理员关闭群组，当前用户不具备管理员权限
                         continue;
                     }
                 }
-                $orginfo['usernum'] = C::t('organization_user')->fetch_usernums_by_orgid($v);
-                $orginfo['creater'] = C::t('organization_admin')->fetch_group_creater($v);
+                //jstree加载不需获取成员数和创建者
+                if(!$foreces){
+                    $orginfo['usernum'] = C::t('organization_user')->fetch_usernums_by_orgid($orginfo['orgid']);
+                    $orginfo['creater'] = C::t('organization_admin')->fetch_group_creater($orginfo['orgid']);
+                }
 
                 if ($orginfo['aid'] > 0) {
                     //群组图
                     $orginfo['imgs'] = 'index.php?mod=io&op=thumbnail&width=24&height=24&path=' . dzzencode('attach::' . $orginfo['aid']);
                 }
-                $contaions = C::t('resources')->get_contains_by_fid($orginfo['fid'],true);
+               /* $contaions = C::t('resources')->get_contains_by_fid($orginfo['fid'],true);
                 $orginfo['ffsize'] = lang('property_info_size', array('fsize' => formatsize($contaions['size']), 'size' => $contaions['size']));
-                $orginfo['contain'] = lang('property_info_contain', array('filenum' => $contaions['contain'][0], 'foldernum' => $contaions['contain'][1]));
+                $orginfo['contain'] = lang('property_info_contain', array('filenum' => $contaions['contain'][0], 'foldernum' => $contaions['contain'][1]));*/
                 $groups[] = $orginfo;
         }
         return $groups;
     }
-
-    public function fetch_groupdiron_by_uid($uid)
-    {//查询自定义群组，并判断共享目录是否开启
-        global $_G;
-        if (!$uid) return false;
-        $groups = array();
-        $orgids = C::t('organization_user')->fetch_orgids_by_uid($uid,1);
-        foreach ($orgids as $v) {
-            $orginfo = DB::fetch_first("select * from %t where `orgid` = %d", array($this->_table, $v));
-                if ($orginfo['syatemon'] == 0) {//系统管理员关闭群组
-                    continue;
-                } elseif ($orginfo['syatemon'] == 1 && $orginfo['manageon'] == 0 && C::t('organization_admin')->chk_memberperm($v, $uid) == 0) {//管理员关闭群组，当前用户不具备管理员权限
-                    continue;
-                }
-                if ($orginfo['available'] == 0) {
-                    continue;
-                } elseif ($orginfo['available'] && $orginfo['diron'] == 0 && C::t('organization_admin')->chk_memberperm($v, $uid) == 0) {//管理员关闭共享,且当前用户不具备管理权限
-                    continue;
-                }
-
-                $orginfo['usernum'] = C::t('organization_user')->fetch_usernums_by_orgid($v);
-                $orginfo['creater'] = C::t('organization_admin')->fetch_group_creater($v);
-
-                if ($orginfo['aid'] > 0) {
-                    //群组图
-                    $orginfo['imgs'] = 'index.php?mod=io&op=thumbnail&width=24&height=24&path=' . dzzencode('attach::' . $orginfo['aid']);
-                }
-                $contaions = C::t('resources')->get_contains_by_fid($orginfo['fid'],true);
-                $orginfo['ffsize'] = lang('property_info_size', array('fsize' => formatsize($contaions['size']), 'size' => $contaions['size']));
-                $orginfo['contain'] = lang('property_info_contain', array('filenum' => $contaions['contain'][0], 'foldernum' => $contaions['contain'][1]));
-                $groups[] = $orginfo;
-            }
-        return $groups;
-    }
-
 
     public function delete_by_orgid($orgid)
     {
         if (!$org = parent::fetch($orgid)) {
             return array('error' => lang('remove_error_object_inexistence'));
         }
-        if (self::fetch_all_by_forgid($org['orgid'], true) || ($org['fid'] && DB::result_first("select count(*) from %t where pfid = %d", array('resources', $org['fid'])))) {
+        if (self::fetch_all_by_forgid($org['orgid'], true) || ($org['fid'] && DB::result_first("select count(*) from %t where pfid = %d and isdelete < 1", array('resources', $org['fid'])))) {
             return array('error' => lang('remove_error_check_the_content'));
         }
         //删除对应目录
         if ($org['fid']) {
-            C::t('folder')->delete_by_fid($org['fid'], true);
+            C::t('folder')->delete_by_fid($org['fid'],true);
         }
         //删除对应事件
         C::t('resources_event')->delete_by_gid($orgid);
@@ -190,8 +166,8 @@ class table_organization extends dzz_table
             if (intval($org['aid']) != 0) {
                 C::t('attachment')->addcopy_by_aid($org['aid'], -1);
             }
-            if ($this->_wxbind) {
-                self::deleteDepartment($org['worgid']);
+            if( $org["type"]==0){//非群主才同步
+                self::syn_organization($org['orgid'],'delete');
             }
             return $org;
         } else {
@@ -211,7 +187,7 @@ class table_organization extends dzz_table
         }else{
             $pathkey = $pathkey . '.*';
         }
-        foreach (DB::fetch_all("select orgid from %t where pathkey regexp %s", array($this->_table, $pathkey,)) as $v) {
+        foreach (DB::fetch_all("select orgid from %t where pathkey regexp %s", array($this->_table, $pathkey)) as $v) {
             $orgids[] = $v['orgid'];
         }
         if (DB::result_first("select count(*) from %t where uid = %d and orgid in (%n) ", array('organization_user', $uid, $orgids)) > 0) {
@@ -220,42 +196,42 @@ class table_organization extends dzz_table
         return false;
     }
 	
-
     //获取机构群组下级
     public function fetch_org_by_uidorgid($uid, $orgid)
     {
+		
         $resultarr = array();
         //如果该用户是当前部门普通成员则不获取下级机构信息,如果是下级机构成员或当前机构管理员则获取下级部门信息
         if (C::t('organization_admin')->chk_memberperm($orgid, $uid)) {//如果是管理员
             $resultarr = self::fetch_all_by_forgid($orgid,0,0);
 
         } elseif ($this->ismember($orgid,$uid,true)) {//如果是当前机构或部门下级的成员
-            $orgids = C::t('organization_user')->fetch_org_by_uid($uid,0);
-
+            $orgids = C::t('organization_user')->fetch_orgids_by_uid($uid,0);
             $pathkeyarr = DB::fetch_all("select pathkey from %t where orgid in (%n) ", array($this->_table, $orgids));
-            $fidarr = array();
+            $porgids = array();
             foreach ($pathkeyarr as $v) {
                 $vs = str_replace('_', '', $v['pathkey']);
                 $varr = explode('-', $vs);
-                $fidarr[] = $varr;
+                $porgids = array_merge($porgids,$varr);
             }
+			
             $orgsarr = self::fetch_all_by_forgid($orgid,0,0);
             $orgidarr = array();
             foreach ($orgsarr as $v) {
-                foreach ($fidarr as $val) {
-                    if (!in_array($v['orgid'], $orgidarr) && in_array($v['orgid'], $val)) {
+                
+                    if (!in_array($v['orgid'], $orgidarr) && in_array($v['orgid'], $porgids)) {
+						
                         if (C::t('organization_admin')->chk_memberperm($v['orgid'], $uid) > 0 && $v['syatemon'] == 1) {
                             $resultarr[] = $v;
-                        } elseif ($v['syatemon'] == 1 && $v['manageon'] == 1) {
+                        } elseif ($v['syatemon'] && $v['manageon'] && $v['diron']) {
                             $resultarr[] = $v;
                         }
                         $orgidarr[] = $v['orgid'];
                     }
-                }
-
             }
 
-        }
+		}
+		//print_r($resultarr);
         return $resultarr;
     }
 
@@ -319,12 +295,12 @@ class table_organization extends dzz_table
     public function setFolderAvailableByOrgid($orgid, $available=0)
     {
         if (!$org = parent::fetch($orgid)) return false;
-        /*if ($available > 0 && $org['forgid'] > 0) {//上级没有开启目录共享，下级无法开启
+        if ($available > 0 && $org['forgid'] > 0) {//上级没有开启目录共享，下级无法开启
             $parent = parent::fetch($org['forgid']);
             if ($parent['diron'] < 1) return false;
-        }*/
+        }
         if (parent::update($orgid, array('diron' => $available))) {
-            self::setFolderByOrgid($orgid);
+            //self::setFolderByOrgid($orgid);
             //include_once libfile('function/cache');
             //updatecache('organization');
             return true;
@@ -371,11 +347,11 @@ class table_organization extends dzz_table
         }
 
         if ($fid = DB::result_first("select fid from " . DB::table('folder') . " where gid='{$orgid}' and flag='organization'")) {
-            C::t('folder')->update($fid, array('fname' => $org['orgname'], 'display' => $org['disp'], 'pfid' => $pfid, 'innav' => $org['available']));
-            C::t('resources_path')->update_path_by_fid($fid, $org['orgname']);
-            self::update($orgid, array('fid' => $fid));
+            if(C::t('folder')->rename_by_fid($fid,$org['orgname'])){
+                self::update($orgid, array('fid' => $fid));
+            }
         } else {
-            $folder = array('fname' => $org['orgname'],
+            $folder = array('fname' => C::t('folder')->getFolderName($org['orgname'],$pfid,$org['fid']),
                 'pfid' => $pfid,
                 'display' => $org['disp'],
                 'flag' => 'organization',
@@ -400,11 +376,12 @@ class table_organization extends dzz_table
 
         if ($torg = DB::fetch_first("select disp,orgid from %t where forgid=%d and orgid!=%d order by disp limit %d,1", array($this->_table, $forgid, $orgid, $disp))) {
             $disp = $torg['disp'];
-            if (DB::query("update %t SET disp=disp+1 where disp>=%d and forgid=%d", array($this->_table, $disp, $forgid)) && $this->_wxbind) {
-                foreach (DB::fetch_all("select orgid from %t where disp>%d and forgid=%d", array($this->_table, $disp, $forgid)) as $value) {
-                    self::wx_update($value['orgid']);
-                }
-            }
+         
+			foreach (DB::fetch_all("select orgid,disp from %t where disp>%d and forgid=%d", array($this->_table, $disp, $forgid)) as $value) {
+				parent::update($value['orgid'],array('disp'=>$value['disp']+1));
+				//self::wx_update($value['orgid']);
+			}
+            
         } else {
             $disp = DB::result_first("select max(disp) from %t where forgid=%d", array($this->_table, $forgid)) + 1;
         }
@@ -424,17 +401,11 @@ class table_organization extends dzz_table
                     }
                 }
             }
-            //include_once libfile('function/cache');
-            //updatecache('organization');
             if ($disp > 10000) {
-                if (DB::query("update %t SET disp=disp-9000 where forgid=%d", array($this->_table, $forgid))) {
-                    foreach (DB::fetch_all("select orgid from %t where forgid=%d", array($this->_table, $forgid)) as $value) {
-                        self::wx_update($value['orgid']);
-                    }
-                }
-            } else {
-                if ($this->_wxbind) self::wx_update($orgid);
-            }
+				foreach (DB::fetch_all("select orgid ,disp from %t where forgid=%d", array($this->_table, $forgid)) as $value) {
+					parent::update($value['orgid'],array('disp'=>$value['disp']-9000));
+				}
+            } 
             return $return;
         } else {
             return false;
@@ -445,13 +416,13 @@ class table_organization extends dzz_table
     {
         $data = parent::fetch($borgid);
         $disp = $data['disp'] + 1;
-        DB::query("update %t SET disp=disp+1 where disp>=%d and forgid=%d", array($this->_table, $disp, $data['forgid']));
+       // DB::query("update %t SET disp=disp+1 where disp>=%d and forgid=%d", array($this->_table, $disp, $data['forgid']));
         return $disp;
     }
 
-    public function chk_by_orgname($orgname)
+    public function chk_by_orgname($orgname,$type = 0)
     {
-        if (DB::result_first("select count(*) from %t where orgname = %s", array($this->_table, $orgname, getglobal('uid'))) > 0) {
+        if (DB::result_first("select count(*) from %t where orgname = %s and `type` = %d", array($this->_table, $orgname,$type, getglobal('uid'))) > 0) {
             return false;
         }
         return true;
@@ -475,10 +446,6 @@ class table_organization extends dzz_table
             //添加对应动态
             $eventdata = array('groupname' => $setarr['orgname'], 'uid' => getglobal('uid'), 'username' => getglobal('username'));
             C::t('resources_event')->addevent_by_pfid($fid, 'create_group', 'create', $eventdata, $setarr['orgid']);
-
-            if ($synwx && $this->_wxbind) {//同步到微信端
-                self::wx_update($setarr['orgid']);
-            }
             self::setPathkeyByOrgid($setarr['orgid']);
             return $setarr['orgid'];
         }
@@ -499,14 +466,21 @@ class table_organization extends dzz_table
                 $uid = getglobal('uid');
                 C::t('organization_admin')->insert($uid, $setarr['orgid'], 1);
             }
-            if ($this->_wxbind) {//同步到微信端
-                self::wx_update($setarr['orgid']);
-            }
-            self::setPathkeyByOrgid($setarr['orgid']);
+            
+            self::setPathkeyByOrgid($setarr['orgid']); 
+            if(isset($setarr['type']) && $setarr['type'] == 0 ) self::syn_organization($setarr['orgid']);
             return $setarr;
         }
 
         return false;
+    }
+    
+    public function syn_organization( $data=array(),$type="update" ){
+        if( $type=="update"){
+            Hook::listen('syntoline_department',$data);//注册绑定到三方部门表 
+        }else if( $type=="delete"){
+            Hook::listen('syntoline_department',$data,"del");//删除对应到三方部门表
+        }
     }
 
     public function update_by_orgid($orgid, $setarr, $synwx = 1)
@@ -519,10 +493,8 @@ class table_organization extends dzz_table
                 if (parent::update($orgid, array('orgname' => $name))) {
                     $body_data = array('username' => getglobal('username'), 'oldname' => $org['orgname'], 'newname' => $name);
                     $event_body = 'update_group_name';
-                    C::t('resources_event')->addevent_by_pfid($org['fid'], $event_body, 'update_groupname', $body_data, $orgid, '', $org['orgname']);//记录事件
-                    if ($this->_wxbind) {//同步到微信端
-                        self::wx_update($orgid);
-                    }
+                    C::t('resources_event')->addevent_by_pfid($org['fid'], $event_body, 'update_groupname', $body_data, $orgid, '', $org['orgname']);//记录事件 
+                    if( $synwx && $org['type']==0) self::syn_organization($orgid);
                 }
                 unset($setarr['orgname']);
             }
@@ -550,15 +522,13 @@ class table_organization extends dzz_table
 					C::t('attachment')->addcopy_by_aid($aid);
 				}
 			}
-       $org = array_merge($org, $setarr);
+            $org = array_merge($org, $setarr);
             self::setFolderByOrgid($org['orgid']);
             $body_data = array('username' => getglobal('username'));
             $event_body = 'update_group_setting';
             C::t('resources_event')->addevent_by_pfid($org['fid'], $event_body, 'update_setting', $body_data, $orgid, '', $org['orgname']);//记录事件
-            self::setPathkeyByOrgid($orgid);
-            if ($synwx && $this->_wxbind) {//同步到微信端
-                self::wx_update($orgid);
-            }
+            self::setPathkeyByOrgid($orgid);  
+            if( $synwx &&  $org['type']==0 ) self::syn_organization($orgid);
             return true;
         }
         return true;
@@ -573,8 +543,9 @@ class table_organization extends dzz_table
 	public function getUpOrgidTree($orgid,$pids=array()){
 		global $_G;
 		if($org=C::t('organization')->fetch($orgid)){
-			$pids[]=$orgid;
-			$pids=getUpOrgidTree($org['forgid'],$pids);
+			//$pids[]=$orgid;
+			array_unshift($pids,$orgid);
+			$pids=self::getUpOrgidTree($org['forgid'],$pids);
 		}
 		return ($pids);
 	}
@@ -589,8 +560,8 @@ class table_organization extends dzz_table
             return false;
         }else{
             if ($force || empty($org['pathkey'])) {//没有pathkey,
-                include_once libfile('function/organization');
-				if($ids=getUpOrgidTree($org['orgid'])){
+              // include_once libfile('function/organization');
+				if($ids=self::getUpOrgidTree($org['orgid'])){
 					$pathkey='_'.implode('_-_',$ids).'_';
 					if( parent::update($org['orgid'],array('pathkey'=>$pathkey))) return $pathkey;
 				}
@@ -604,9 +575,12 @@ class table_organization extends dzz_table
             }
             if ($org['pathkey'] == $npathkey) return $npathkey; //没有改变；
             $like = '^' . $org['pathkey'];
-            if (DB::query("update %t set pathkey=REPLACE(pathkey,%s,%s) where pathkey REGEXP %s", array($this->_table, $org['pathkey'], $npathkey, $like))) {
+			foreach(DB::fetch_all("select orgid,pathkey from %t where pathkey REGEXP %s", array($this->_table, $like)) as $value){
+				parent::update($value['orgid'],array('pathkey'=>str_replace($org['pathkey'],$npathkey,$value['pathkey'])));
+			}
+            /*if (DB::query("update %t set pathkey=REPLACE(pathkey,%s,%s) where pathkey REGEXP %s", array($this->_table, $org['pathkey'], $npathkey, $like))) {
                 return $npathkey;
-            }
+            }*/
         }
     }
 
@@ -678,18 +652,7 @@ class table_organization extends dzz_table
             }
         }
         return false;
-    }
-
-    public function deleteDepartment($id)
-    {
-        $wx = new qyWechat(array('appid' => getglobal('setting/CorpID'), 'appsecret' => getglobal('setting/CorpSecret'), 'agentid' => 0));
-        if ($wx->deleteDepartment($id)) return true;
-        else {
-            $message = 'deleteDepartment：errCode:' . $wx->errCode . ';errMsg:' . $wx->errMsg;
-            runlog('wxlog', $message);
-        }
-        return false;
-    }
+    } 
 
     public function getPathByOrgid($orgid,$space='-')
     {
@@ -729,8 +692,7 @@ class table_organization extends dzz_table
             //当前机构或部门管理员，查询所有下级和上级
             if (C::t('organization_admin')->chk_memberperm($val, $uid)) {
                 $path = DB::result_first("select pathkey from %t where orgid = %d", array($this->_table, $val));
-                $patharr = DB::fetch_all("select pathkey from %t where pathkey regexp %s and available = %d and diron = %d", array($this->_table, '^' . $path . '.*', 1, 1));
-
+                $patharr = DB::fetch_all("select pathkey from %t where pathkey regexp %s and available = %d", array($this->_table, '^' . $path . '.*', 1));
                 foreach ($patharr as $v) {
                     $pathstr = str_replace('_', '', $v['pathkey']);
                     if ($orgidarr = explode('-', $pathstr)) $orgids_admin = array_merge($orgids_admin, $orgidarr);
@@ -743,7 +705,6 @@ class table_organization extends dzz_table
 
             }
         }
-
         $member_orgids = array();
         //判断参与群组的群组开启和文件开启
         foreach (DB::fetch_all('select manageon,diron,orgid from %t where orgid in(%n)', array($this->_table, $orgids_member)) as $v) {

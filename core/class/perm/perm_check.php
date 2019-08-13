@@ -20,6 +20,7 @@ class perm_check{
         }
         return $perm;
     }
+	
     function getPerm($fid, $bz='',$i=0){
         global $_G;
         $i++;
@@ -57,9 +58,9 @@ class perm_check{
                     $power1=new perm_binPerm($perm);
                     return $power1->mergePower(self::getuserPerm());;
                 }else{ //继承上级，查找上级
-                    /*if($folder['pfid']>0 && $folder['pfid']!=$folder['fid']){ //有上级目录
+                  /*  if($folder['pfid']>0 && $folder['pfid']!=$folder['fid']){ //有上级目录
                         return self::getPerm($folder['pfid'],$bz,$i);
-                    }else{   //其他的情况使用*/
+                    }else{ */  //其他的情况使用
                     return self::getuserPerm();
                     //}
                 }
@@ -68,6 +69,7 @@ class perm_check{
             return 3;
         }
     }
+
     function getPerm1($fid, $bz='',$i=0,$newperm = 0){
         global $_G;
 
@@ -155,7 +157,7 @@ class perm_check{
         if($_G['uid']<1){ //游客没有权限
             return false;
         }
-        if($bz || $arr['bz']){
+        if(($bz && $bz!='dzz') || ($arr['bz'] && $arr['bz']!='dzz')){
             return self::checkperm_Container($arr['pfid'],$action,$bz?$bz:$arr['bz']);
         }else{
             //首先判断ico的超级权限；
@@ -185,7 +187,7 @@ class perm_check{
             if(!perm_FolderSPerm::isPower(perm_FolderSPerm::flagPower($bz),$action)) return false;
             return true;
         }else{
-            if($folder=C::t('folder')->fetch_by_fid($pfid)){
+            if($folder=C::t('folder')->fetch($pfid)){
                 //首先判断目录的超级权限；
                 if(!perm_FolderSPerm::isPower($folder['fsperm'],$action)) return false;
                 //默认目录只有管理员有权限改变排列

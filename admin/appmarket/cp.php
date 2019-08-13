@@ -24,7 +24,7 @@ if ($do == 'export') {//应用导出
 	$app['appico'] = imagetobase64($app['appico']);
 	$app['extra'] = array();
 	$appid=$app['appid'];
-	unset($app['mid']);
+	//unset($app['mid']);
 	unset($app['appid']);
 	unset($app['orgid']);
 	unset($app['available']);
@@ -58,8 +58,10 @@ if ($do == 'export') {//应用导出
 	$apparray['app'] = $app;
 	$apparray['version'] = strip_tags($_G['setting']['version']);
 	$hooks=array();
-	foreach(DB::fetch_all("SELECT name,addons FROM %t where `status`='1' and app_market_id='".$appid."' ORDER BY priority",array('hooks')) as $value) {
-               $hooks[$value['name']]=$value['addons'];
+	 
+	foreach(DB::fetch_all("SELECT * FROM %t where `status`='1' and app_market_id='".$appid."' ORDER BY priority",array('hooks')) as $value) {
+        $hooks[$value['name']]=$value['addons'];
+		$hooks['_attributes'][$value['name']]=array("priority"=>$value['priority'],'description'=>$value['description']);
     }
 	
 	if($hooks) $apparray['hooks']=$hooks;
@@ -71,12 +73,11 @@ elseif ($do == 'import') {//导入应用
 	if (!submitcheck('importsubmit')) {
 		include template('import');
 	} else {
-		$apparray = getimportdata('Dzz! app'); 
-
+		$apparray = getimportdata('Dzz! app');
 		if ($apparray['app']['identifier']) {
 			if(empty($apparray['app']['app_path'])) $apparray['app']['app_path']='dzz';
 			if (!is_dir(DZZ_ROOT . './'.$apparray['app']['app_path'].'/' . $apparray['app']['identifier'])) {
-				showmessage('list_cp_Application_directory_exist',array('app_path'=>$app['app_path'],'identifier'=>$app['identifier']));
+				showmessage(lang('list_cp_Application_directory_exist',array('app_path'=>$app['app_path'],'identifier'=>$app['identifier'])));
 			}
 			$extra = $apparray['app']['extra'];
 			$filename = $extra['installfile']; 
@@ -255,7 +256,7 @@ elseif ($do == 'uninstall') {//卸载应用
 		if (!empty($apparray['app']['extra']['uninstallfile']) && preg_match('/^[\w\.]+$/', $apparray['app']['extra']['uninstallfile'])) {
 			$filename = $entrydir . '/' . $apparray['app']['extra']['uninstallfile'];
 			if (file_exists($filename)) {
-				$confirm_uninstall_url= MOD_URL.'&op=cp&do=uninstall_confirm&appid='.$appid.'&refer='.urlencode($refer);
+				$confirm_uninstall_url= outputurl( $_G['siteurl'].MOD_URL.'&op=cp&do=uninstall_confirm&appid='.$appid.'&refer='.urlencode($refer) );
 				@include $filename;
 			} else {
 				$finish = TRUE;
@@ -271,6 +272,9 @@ elseif ($do == 'uninstall') {//卸载应用
 	if ($finish) { 
 		C::t('app_market') -> delete_by_appid($appid);
 		cron_delete($app);
+		//删除安装临时文件
+		$temp_install=DZZ_ROOT.'./data/update/app/'.$app['app_path'].'/'.$app['identifier'];
+		removedirectory($temp_install);
 		writelog('otherlog', "卸载应用 ".$app['appname']);
 		showmessage($msg, ADMINSCRIPT . '?mod=appmarket', array(), array('alert' => 'right'));
 	}

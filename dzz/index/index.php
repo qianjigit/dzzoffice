@@ -1,8 +1,5 @@
 <?php
 /*默认页跳转*/
-
-$app=DB::fetch_first("select * from %t where (`group`<3 OR identifier='appmanagement') and isshow>0 and `available`>0 ORDER BY disp",array('app_market'));
-
-$url=replace_canshu($app['appurl']);
-header("Location: ".$url);
+Hook::listen('check_login');//检查是否登录，未登录跳转到登录界面
+include template('main');
 exit();
